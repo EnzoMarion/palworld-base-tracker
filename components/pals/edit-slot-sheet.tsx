@@ -10,6 +10,8 @@ type PalSlot = {
     assignedTo: string | null;
 };
 
+const TEAM = ["Akame", "Evan", "Alithan"];
+
 export function EditSlotForm({ pal, onClose }: { pal: PalSlot; onClose: () => void }) {
     const router = useRouter();
     const [status, setStatus] = useState(pal.status);
@@ -21,6 +23,8 @@ export function EditSlotForm({ pal, onClose }: { pal: PalSlot; onClose: () => vo
         setIsSubmitting(true);
 
         try {
+            const currentUser = localStorage.getItem("palworld_user") || "Akame";
+
             const res = await fetch("/api/slots", {
                 method: "PATCH",
                 headers: { "Content-Type": "application/json" },
@@ -29,7 +33,7 @@ export function EditSlotForm({ pal, onClose }: { pal: PalSlot; onClose: () => vo
                     status,
                     assignedTo: assignedTo === "" ? null : assignedTo,
                     palName: pal.palName,
-                    userName: "Mario",
+                    userName: currentUser,
                 }),
             });
 
@@ -45,17 +49,17 @@ export function EditSlotForm({ pal, onClose }: { pal: PalSlot; onClose: () => vo
     };
 
     return (
-        <form onSubmit={handleSubmit} className="space-y-4 rounded-xl border border-zinc-800 bg-zinc-950 p-6">
+        <form onSubmit={handleSubmit} className="space-y-4 rounded-2xl border border-slate-800 bg-slate-950 p-6 shadow-2xl">
             <div>
-                <h3 className="text-lg font-bold text-white">Modifier {pal.palName}</h3>
+                <h3 className="text-xl font-bold text-white">Modifier {pal.palName}</h3>
             </div>
 
             <div className="space-y-2">
-                <label className="text-sm font-medium text-zinc-400">Statut</label>
+                <label className="text-sm font-medium text-slate-400">Statut</label>
                 <select
                     value={status}
                     onChange={(e) => setStatus(e.target.value)}
-                    className="w-full rounded-lg border border-zinc-800 bg-zinc-900 p-2.5 text-white outline-none focus:border-primary"
+                    className="w-full cursor-pointer rounded-xl border border-slate-800 bg-slate-900 p-3 text-white outline-none transition-colors focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
                 >
                     <option value="planned">Planifié</option>
                     <option value="breeding">En reproduction</option>
@@ -67,30 +71,35 @@ export function EditSlotForm({ pal, onClose }: { pal: PalSlot; onClose: () => vo
             </div>
 
             <div className="space-y-2">
-                <label className="text-sm font-medium text-zinc-400">Assigné à</label>
-                <input
-                    type="text"
+                <label className="text-sm font-medium text-slate-400">Assigné à</label>
+                <select
                     value={assignedTo}
                     onChange={(e) => setAssignedTo(e.target.value)}
-                    placeholder="Ex: Mario, Enzo..."
-                    className="w-full rounded-lg border border-zinc-800 bg-zinc-900 p-2.5 text-white outline-none focus:border-primary"
-                />
+                    className="w-full cursor-pointer rounded-xl border border-slate-800 bg-slate-900 p-3 text-white outline-none transition-colors focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
+                >
+                    <option value="">-- Non assigné --</option>
+                    {TEAM.map((member) => (
+                        <option key={member} value={member}>
+                            {member}
+                        </option>
+                    ))}
+                </select>
             </div>
 
-            <div className="flex gap-2 pt-2">
-                <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="flex-1 rounded-lg bg-white px-4 py-2 font-semibold text-black hover:bg-zinc-200 disabled:opacity-50"
-                >
-                    {isSubmitting ? "Enregistrement..." : "Sauvegarder"}
-                </button>
+            <div className="flex gap-3 pt-4">
                 <button
                     type="button"
                     onClick={onClose}
-                    className="flex-1 rounded-lg bg-zinc-800 px-4 py-2 font-semibold text-white hover:bg-zinc-700"
+                    className="flex-1 rounded-xl bg-slate-800 px-4 py-2.5 font-bold text-white transition-colors hover:bg-slate-700"
                 >
                     Annuler
+                </button>
+                <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    className="flex-1 rounded-xl bg-sky-500 px-4 py-2.5 font-bold text-white transition-all hover:bg-sky-400 hover:shadow-[0_0_15px_rgba(14,165,233,0.3)] disabled:opacity-50"
+                >
+                    {isSubmitting ? "Enregistrement..." : "Sauvegarder"}
                 </button>
             </div>
         </form>
