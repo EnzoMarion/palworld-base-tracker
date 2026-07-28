@@ -14,8 +14,8 @@
     "@libsql/client": "^0.6.0",
     "drizzle-orm": "^0.30.1",
     "next": "15.0.0",
-    "react": "19.0.0-rc",
-    "react-dom": "19.0.0-rc",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
     "lucide-react": "^0.378.0"
   },
   "devDependencies": {
