@@ -3,6 +3,7 @@ import { activityLog, slots } from "@/lib/schema";
 import { eq } from "drizzle-orm";
 import { randomUUID } from "crypto";
 import { NextResponse } from "next/server";
+export const dynamic = 'force-dynamic';
 
 export async function GET() {
     const data = await db.select().from(slots);
